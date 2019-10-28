@@ -1,0 +1,64 @@
+<script>
+  var fps = 60, fpsInterval, startTime, now, then, elapsed, lastobjindex = 0, objects = [];
+  Array.prototype.remove = function(index) {
+    delete this[index];
+    for (var i = index + 1; i < this.length; i++)
+      this[i-1] = this[i];
+    this.pop();
+  }
+  Array.prototype.insert = function(index, value) {
+    this.unshift(undefined);
+    for (var i = 0; i < index + 1; i++)
+      this[i-1] = this[i];
+    this[index] = value;
+  }
+  class object {
+    constructor(x = 0, y = 0, initcode = undefined, stepcode = undefined, diecode = undefined, hspeed = 0, vspeed = 0) {
+      this.x = x
+      this.y = y
+      this.hspeed = hspeed
+      this.vspeed = vspeed
+      this.stepcode = stepcode
+      this.index = lastobjindex
+      this.diecode = diecode
+      eval(initcode)
+      lastobjindex += 1
+      this.kill = function kill() { eval(diecode); objects.remove(this.id); delete this; }
+      objects.push(this);
+      this.id = objects.length
+    }
+  }
+  function initloop(fps) {
+    fpsInterval = 1000 / fps;
+    then = Date.now();
+    startTime = then;
+    gameLoop();
+  }
+  function initloop(fps) {
+    fpsInterval = 1000 / fps;
+    then = Date.now();
+    startTime = then;
+    gameLoop();
+  }
+  function gameLoop()
+  {
+    requestAnimationFrame(gameLoop);
+    now = Date.now();
+    elapsed = now - then;
+    if (elapsed > fpsInterval) {
+      then = now - (elapsed % fpsInterval);
+    }
+    for (var i = 0; i < objects.length; i++)
+    {
+      if (objects[i].stepcode !== null && objects[i].stepcode !== undefined && objects[i].stepcode !== "")
+        eval(objects[i].stepcode)
+    }
+  }
+  initloop(60);
+  function testobj()
+  {
+    test = new object(100,100,"document.body.innerHTML += '<a id=\"test\">Hello, World!</a>';","document.getElementById('test').style = 'position:absolute;top:'+test.y.toString()+'px;left:'+test.x.toString()+'px;'")
+  }
+</script>
+
+<button onclick='testobj()'>Add object (100,100)</button>
